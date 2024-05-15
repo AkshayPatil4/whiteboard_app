@@ -1,0 +1,21 @@
+.toolbar {
+  display: flex;
+  flex-direction: column; /* Arrange buttons vertically */
+  background-color: #f0f0f0;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.toolbar button {
+  padding: 8px;
+  margin-bottom: 5px;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.toolbar button.selected {
+  background-color: #e0e0e0; /* Highlight selected button */
+}
+
+

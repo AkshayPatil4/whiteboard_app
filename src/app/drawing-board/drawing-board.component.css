@@ -1,0 +1,21 @@
+.whiteboard-container {
+  display: flex; 
+  height: 100vh; 
+}
+
+.toolbar-container {
+  width: 200px; 
+}
+
+.whiteboard {
+  flex: 1; 
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch; 
+}
+
+.whiteboard-canvas {
+  border: 2px solid #ccc;
+  background-color: white; 
+  cursor: crosshair;       
+}

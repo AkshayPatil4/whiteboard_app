@@ -1,0 +1,36 @@
+<div class="toolbar">
+  <div>
+    Color:
+    <input type="color" [(ngModel)]="penColor" (change)="penColorChanged.emit(penColor)">
+  </div>
+  <button [class.selected]="selectedTool === 'pen'" (click)="selectTool('pen')">Pen</button>
+  
+  <div class="dropdown-content">
+    <div>
+      Thickness:
+      <input type="range" min="1" max="10" [(ngModel)]="penThickness"
+        (change)="penThicknessChanged.emit(penThickness)">
+      <span>{{penThickness}}</span>
+    </div>
+  </div>
+  <button [class.selected]="selectedTool === 'eraser'" (click)="selectTool('eraser')">Eraser</button>
+  <button [class.selected]="selectedTool === 'rectangle'" (click)="selectTool('rectangle')">Rectangle</button>
+  <button [class.selected]="selectedTool === 'circle'" (click)="selectTool('circle')">Circle</button>
+  
+  <button [class.selected]="selectedTool === 'line'" (click)="onToolSelected('line')">Line</button>
+
+  <div #lineStyleDropdown class="dropdown" style="display: none;">
+    <select [(ngModel)]="selectedLineStyle" (change)="onLineStyleSelected(selectedLineStyle)">
+      <option *ngFor="let style of lineStyles" [value]="style">{{style}}</option>
+    </select>
+  </div>
+  <button (click)="undo()">Undo</button>
+  <button (click)="redo()">Redo</button>
+  <button (click)="clear()">Clear</button>
+  <button [class.selected]="selectedTool === 'text'" (click)="selectTool('text')">Text</button>
+  <button (click)="saveWhiteboard()">Save</button>
+  <input type="file" #fileInput (change)="loadWhiteboard(fileInput.files)">
+  </div>
+  
+    
+
