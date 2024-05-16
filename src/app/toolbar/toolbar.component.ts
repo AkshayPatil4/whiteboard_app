@@ -98,6 +98,17 @@ export class ToolbarComponent  implements AfterViewInit {
                 // Handle the error (e.g., show an error message to the user)
               }
             });
+            this.whiteboardService.saveWhiteboardasimage(filename, whiteboardData)
+            .subscribe({
+              next: (response) => {
+                console.log('Whiteboard saved:', response);
+                // Optionally, you can emit an event here to notify other components or show a success message
+              },
+              error: (error) => {
+                console.error('Error saving whiteboard:', error);
+                // Handle the error (e.g., show an error message to the user)
+              }
+            });
         } else {
           console.error('No whiteboard data found.');
         }
