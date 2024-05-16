@@ -1,14 +1,15 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { WhiteboardService } from '../whiteboard.service';
 import { DrawingBoardComponent } from '../drawing-board/drawing-board.component';
+import { WhiteboardDataService } from '../whiteboard-data.service';
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent {
+export class ToolbarComponent  implements AfterViewInit {
 
-  constructor(private whiteboardService: WhiteboardService) {}
+ 
   @Output() toolSelected = new EventEmitter<string>();
   @Output() downloadClicked = new EventEmitter<void>();
   @Output() penThicknessChanged = new EventEmitter<number>();
@@ -29,6 +30,22 @@ export class ToolbarComponent {
   @ViewChild('lineStyleDropdown') lineStyleDropdown!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild(DrawingBoardComponent) drawingBoard!: DrawingBoardComponent;
+  
+  private whiteboardData: any; 
+  constructor(private whiteboardService: WhiteboardService, private whiteboardDataService: WhiteboardDataService  ) {}
+  
+
+  ngAfterViewInit(): void {
+    // Wait for the drawing board to be fully initialized
+    setTimeout(() => {
+      if (this.drawingBoard) { // Check if drawingBoard is defined
+        this.drawingBoard.dataLoaded.subscribe(data => {
+            this.whiteboardData = data;
+        });
+      }
+    }, 0); 
+  }
+
   selectTool(tool: string) {
     this.selectedTool = tool;
     this.toolSelected.emit(tool);
@@ -68,18 +85,23 @@ export class ToolbarComponent {
   saveWhiteboard() {
     const filename = prompt("Enter filename:", "whiteboard.json");
     if (filename) {
-      const whiteboardData = this.drawingBoard.getWhiteboardData();
-      this.whiteboardService.saveWhiteboard(filename, whiteboardData)
-        .subscribe(
-          response => {
-            // Handle successful save (e.g., show a notification)
-            console.log('Whiteboard saved:', response);
-          },
-          error => {
-            // Handle errors (e.g., show an error message)
-            console.error('Error saving whiteboard:', error);
-          }
-        );
+      this.whiteboardDataService.whiteboardData$.subscribe(whiteboardData => {
+        if (whiteboardData) {
+          this.whiteboardService.saveWhiteboard(filename, whiteboardData)
+            .subscribe({
+              next: (response) => {
+                console.log('Whiteboard saved:', response);
+                // Optionally, you can emit an event here to notify other components or show a success message
+              },
+              error: (error) => {
+                console.error('Error saving whiteboard:', error);
+                // Handle the error (e.g., show an error message to the user)
+              }
+            });
+        } else {
+          console.error('No whiteboard data found.');
+        }
+      });
     }
   }
 

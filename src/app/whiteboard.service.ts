@@ -11,18 +11,8 @@ export class WhiteboardService {
 
   constructor(private http: HttpClient) {}
 
-  saveWhiteboard(filename: string, data: any): Observable<string> {
-    const formData = new FormData();
-    formData.append('filename', filename);
-    formData.append('data', JSON.stringify(data));
-    return this.http.post<any>(`${this.backendUrl}/save`, formData)
-      .pipe(map(response => {
-        if (response.success) {
-          return response.fileId;
-        } else {
-          throw new Error(response.error); // or return Observable.throwError()
-        }
-      }));
+  saveWhiteboard(filename: string, data: any): Observable<any> {
+    return this.http.post(`${this.backendUrl}/save`, { filename, data }); // Send as JSON
   }
 
   loadWhiteboard(file: File): Observable<any> {

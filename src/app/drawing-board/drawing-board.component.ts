@@ -1,5 +1,6 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, Input, HostListener , Renderer2 } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Input, HostListener , Renderer2, Output, EventEmitter } from '@angular/core';
 import { WhiteboardService } from '../whiteboard.service';
+import { WhiteboardDataService } from '../whiteboard-data.service';
 interface Shape {
   type: string; // 'pen', 'rectangle', 'circle', 'line', 'eraser', 'text'
   startX: number;
@@ -25,14 +26,15 @@ interface Shape {
 })
 export class DrawingBoardComponent implements AfterViewInit {
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, private whiteboardDataService: WhiteboardDataService) {}
 
   @ViewChild('whiteboardCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   @Input() penThickness: number = 1;
   @Input() penColor: string = '#000000';
   @Input() eraserSize: number = 40; // Default eraser thickness
   @Input() lineStyle: string = 'solid'; // Input for line style
-
+  @Output() dataLoaded = new EventEmitter<Shape[]>();
+  
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private isDrawing = false;
@@ -54,7 +56,8 @@ export class DrawingBoardComponent implements AfterViewInit {
     this.ctx.lineCap = 'round';
     this.ctx.lineWidth = this.penThickness;
     this.ctx.strokeStyle = this.penColor;
-
+    this.dataLoaded.emit(this.getWhiteboardData());
+    this.whiteboardDataService.updateWhiteboardData(this.getWhiteboardData());
     this.resizeCanvas();
   }
 
@@ -62,7 +65,10 @@ export class DrawingBoardComponent implements AfterViewInit {
   onResize() {
     this.resizeCanvas();
   }
-
+  updateWhiteboardData() {
+    // Call this method whenever the whiteboard data changes
+    this.whiteboardDataService.updateWhiteboardData(this.getWhiteboardData());
+  }
   resizeCanvas() {
     const whiteboard = this.canvasRef.nativeElement.parentElement as HTMLElement;
     this.canvas.width = whiteboard.offsetWidth;
@@ -88,7 +94,7 @@ export class DrawingBoardComponent implements AfterViewInit {
       thickness: defaultThickness,
       points: []
     });
-
+    console.log("Shape added:", this.shapes);
     if (this.selectedTool === 'text') {
       this.startText(e); // Handle text input separately
     } else if (this.selectedTool === 'pen' || this.selectedTool === 'eraser') {
@@ -107,6 +113,7 @@ export class DrawingBoardComponent implements AfterViewInit {
     // Push a copy of the current shapes to history
     this.history.push([...this.shapes]);
     this.currentIndex++;
+    this.updateWhiteboardData();
   }
 
 
@@ -124,6 +131,7 @@ export class DrawingBoardComponent implements AfterViewInit {
     } else {
       this.redrawCanvas(); // Redraw for live preview
     }
+    this.updateWhiteboardData();
   }
 
   stopDrawing(e: MouseEvent) {
@@ -156,6 +164,7 @@ export class DrawingBoardComponent implements AfterViewInit {
         this.saveText(); // No need to pass the event here
       }
     });
+    this.updateWhiteboardData();
   }
   
 
@@ -423,6 +432,7 @@ export class DrawingBoardComponent implements AfterViewInit {
 
 getWhiteboardData(): Shape[] {
   return this.shapes; 
+
 }
 
 }
