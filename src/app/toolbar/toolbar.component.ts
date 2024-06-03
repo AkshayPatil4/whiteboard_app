@@ -2,14 +2,16 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, Vie
 import { WhiteboardService } from '../whiteboard.service';
 import { DrawingBoardComponent } from '../drawing-board/drawing-board.component';
 import { WhiteboardDataService } from '../whiteboard-data.service';
+
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css']
 })
+
 export class ToolbarComponent  implements AfterViewInit {
 
- 
+  
   @Output() toolSelected = new EventEmitter<string>();
   @Output() downloadClicked = new EventEmitter<void>();
   @Output() penThicknessChanged = new EventEmitter<number>();
@@ -24,7 +26,7 @@ export class ToolbarComponent  implements AfterViewInit {
   penColor: string = '#000000';
   eraserSize: number = 50;
   
-
+  bpmnShapes: string[] = ['endEvent', 'task', 'gateway'];
   lineStyles = ['solid', 'dashed', 'dotted', 'arrow']; // Available line styles
   selectedLineStyle = this.lineStyles[0];
   @ViewChild('lineStyleDropdown') lineStyleDropdown!: ElementRef;
@@ -44,8 +46,10 @@ export class ToolbarComponent  implements AfterViewInit {
         });
       }
     }, 0); 
+    
   }
 
+  
   selectTool(tool: string) {
     this.selectedTool = tool;
     this.toolSelected.emit(tool);
@@ -116,23 +120,8 @@ export class ToolbarComponent  implements AfterViewInit {
     }
   }
 
-  loadWhiteboard(files: FileList | null) {
-    if (files && files.length > 0) {
-      const file = files[0];
-      this.whiteboardService.loadWhiteboard(file)
-        .subscribe(
-          response => {
-            // Handle successful load (e.g., update the drawing board)
-            console.log('Whiteboard loaded:', response);
-            // Emit an event to the DrawingBoardComponent with the loaded data
-          },
-          error => {
-            // Handle errors (e.g., show an error message)
-            console.error('Error loading whiteboard:', error);
-          }
-        );
-    }
-  }
+  
+  
 
 
 }
