@@ -8,8 +8,10 @@ import {
   Renderer2,
   Output,
   EventEmitter,
+  OnInit,
 } from '@angular/core';
 import { WhiteboardDataService } from '../whiteboard-data.service';
+import { WhiteboardLoaderService } from '../WhiteboardLoader.Service';
 
 interface Shape {
   type: string; // 'pen', 'rectangle', 'circle', 'line', 'eraser', 'text'
@@ -35,10 +37,11 @@ interface Shape {
   templateUrl: './drawing-board.component.html',
   styleUrls: ['./drawing-board.component.css'],
 })
-export class DrawingBoardComponent implements AfterViewInit {
+export class DrawingBoardComponent implements AfterViewInit, OnInit {
   constructor(
     private renderer: Renderer2,
-    private whiteboardDataService: WhiteboardDataService
+    private whiteboardDataService: WhiteboardDataService,
+    private whiteboardLoaderService: WhiteboardLoaderService
   ) {}
 
   @ViewChild('whiteboardCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -77,7 +80,13 @@ export class DrawingBoardComponent implements AfterViewInit {
     this.whiteboardDataService.updateWhiteboardData(this.getWhiteboardData());
     this.resizeCanvas();
   }
-
+  ngOnInit(): void {
+    this.whiteboardLoaderService.whiteboardData$.subscribe(data => {
+      if (data) {
+        this.setWhiteboardData(data);
+      }
+    });
+  }
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.resizeCanvas();
@@ -95,6 +104,11 @@ export class DrawingBoardComponent implements AfterViewInit {
     this.redrawCanvas();
   }
 
+  setWhiteboardData(shapesData: Shape[]) {
+    this.shapes = shapesData;
+     // Verify if shapes array is updated
+    this.redrawCanvas();
+  }
   startDragging() {
     this.isDragging = true;
     this.renderer.setStyle(this.canvas, 'cursor', 'grabbing');

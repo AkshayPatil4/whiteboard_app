@@ -2,6 +2,7 @@
   <button (click)="showFileMenu = !showFileMenu">File</button>
 
   <div class="dropdown" *ngIf="showFileMenu">
+    <button (click)="clear()">New</button>
     <button (click)="showOpenModal = true">Open</button>
     <button (click)="saveWhiteboard()">Save</button>
   </div>
@@ -13,7 +14,9 @@
 
       <ul>
         <li *ngFor="let file of files">
-          <a (click)="showOpenModal = false">{{ file.name }}</a>
+          <a (click)="loadWhiteboard(file.name); showOpenModal = false">{{
+            file.name
+          }}</a>
         </li>
       </ul>
     </div>

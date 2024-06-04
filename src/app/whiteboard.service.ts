@@ -35,4 +35,7 @@ export class WhiteboardService {
         map((response) => response.files) // Extract files array from response
       );
   }
+  loadWhiteboard(fileName: string): Observable<any> {
+    return this.http.get<any>(`${this.backendUrl}/load/${fileName}`);
+  }
 }

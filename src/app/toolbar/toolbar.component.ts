@@ -10,6 +10,8 @@ import {
 import { WhiteboardService } from '../whiteboard.service';
 import { DrawingBoardComponent } from '../drawing-board/drawing-board.component';
 import { WhiteboardDataService } from '../whiteboard-data.service';
+import { WhiteboardLoaderService } from '../WhiteboardLoader.Service';
+import { take } from 'rxjs';
 interface FileInfo {
   id: string;
   name: string;
@@ -47,7 +49,8 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
   private whiteboardData: any;
   constructor(
     private whiteboardService: WhiteboardService,
-    private whiteboardDataService: WhiteboardDataService
+    private whiteboardDataService: WhiteboardDataService,
+    private whiteboardLoaderService: WhiteboardLoaderService
   ) {}
   files: FileInfo[] = [];
   ngOnInit(): void {
@@ -73,6 +76,21 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
     }, 0);
   }
 
+  loadWhiteboard(fileName: string) {
+    console.log('File ID to load:', fileName);
+    this.whiteboardService.loadWhiteboard(fileName)
+      .pipe(take(1)) // Take only the first emission
+      .subscribe(
+        (response: any) => {
+          // Handle successful load
+          console.log('Whiteboard loaded:', response);
+          this.whiteboardLoaderService.updateWhiteboardData(response);
+        },
+        (error) => {
+          console.error('Error loading whiteboard:', error);
+        }
+      );
+  }
   toggleFileMenu() {
     this.showFileMenu = !this.showFileMenu;
   }
@@ -121,7 +139,7 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
         if (whiteboardData) {
           this.whiteboardService
             .saveWhiteboard(filename, whiteboardData)
-            .subscribe({
+            .pipe(take(1)).subscribe({
               next: (response) => {
                 console.log('Whiteboard saved:', response);
                 // Optionally, you can emit an event here to notify other components or show a success message
@@ -133,7 +151,7 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
             });
           this.whiteboardService
             .saveWhiteboardasimage(filename, whiteboardData)
-            .subscribe({
+            .pipe(take(1)).subscribe({
               next: (response) => {
                 console.log('Whiteboard saved:', response);
                 // Optionally, you can emit an event here to notify other components or show a success message
