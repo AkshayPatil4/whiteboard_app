@@ -1,40 +1,116 @@
 <div class="toolbar">
+  <button (click)="showFileMenu = !showFileMenu">File</button>
+
+  <div class="dropdown" *ngIf="showFileMenu">
+    <button (click)="showOpenModal = true">Open</button>
+    <button (click)="saveWhiteboard()">Save</button>
+  </div>
+
+  <div id="openModal" class="modal" *ngIf="showOpenModal">
+    <div class="modal-content">
+      <span class="close-button" (click)="showOpenModal = false">&times;</span>
+      <h2>Open Whiteboard</h2>
+
+      <ul>
+        <li *ngFor="let file of files">
+          <a (click)="showOpenModal = false">{{ file.name }}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
   <div>
     Color:
-    <input type="color" [(ngModel)]="penColor" (change)="penColorChanged.emit(penColor)">
+    <input
+      type="color"
+      [(ngModel)]="penColor"
+      (change)="penColorChanged.emit(penColor)"
+    />
   </div>
-  <button [class.selected]="selectedTool === 'pen'" (click)="selectTool('pen')">Pen</button>
-  
+  <button [class.selected]="selectedTool === 'pen'" (click)="selectTool('pen')">
+    Pen
+  </button>
+
   <div class="dropdown-content">
     <div>
       Thickness:
-      <input type="range" min="1" max="10" [(ngModel)]="penThickness"
-        (change)="penThicknessChanged.emit(penThickness)">
-      <span>{{penThickness}}</span>
+      <input
+        type="range"
+        min="1"
+        max="10"
+        [(ngModel)]="penThickness"
+        (change)="penThicknessChanged.emit(penThickness)"
+      />
+      <span>{{ penThickness }}</span>
     </div>
   </div>
-  <button [class.selected]="selectedTool === 'eraser'" (click)="selectTool('eraser')">Eraser</button>
-  <button [class.selected]="selectedTool === 'rectangle'" (click)="selectTool('rectangle')">Rectangle</button>
-  <button [class.selected]="selectedTool === 'circle'" (click)="selectTool('circle')">Circle</button>
-  <button [class.selected]="selectedTool === 'startEvent'" (click)="selectTool('startEvent')">Start Event</button>
-<button [class.selected]="selectedTool === 'endEvent'" (click)="selectTool('endEvent')">End Event</button>
-<button [class.selected]="selectedTool === 'task'" (click)="selectTool('task')">Task</button>
-<button [class.selected]="selectedTool === 'gateway'" (click)="selectTool('gateway')">Gateway</button>
-<button [class.selected]="selectedTool === 'line'" (click)="onToolSelected('line')">Line</button>
+  <button
+    [class.selected]="selectedTool === 'eraser'"
+    (click)="selectTool('eraser')"
+  >
+    Eraser
+  </button>
+  <button
+    [class.selected]="selectedTool === 'rectangle'"
+    (click)="selectTool('rectangle')"
+  >
+    Rectangle
+  </button>
+  <button
+    [class.selected]="selectedTool === 'circle'"
+    (click)="selectTool('circle')"
+  >
+    Circle
+  </button>
+  <button
+    [class.selected]="selectedTool === 'startEvent'"
+    (click)="selectTool('startEvent')"
+  >
+    Start Event
+  </button>
+  <button
+    [class.selected]="selectedTool === 'endEvent'"
+    (click)="selectTool('endEvent')"
+  >
+    End Event
+  </button>
+  <button
+    [class.selected]="selectedTool === 'task'"
+    (click)="selectTool('task')"
+  >
+    Task
+  </button>
+  <button
+    [class.selected]="selectedTool === 'gateway'"
+    (click)="selectTool('gateway')"
+  >
+    Gateway
+  </button>
+  <button
+    [class.selected]="selectedTool === 'line'"
+    (click)="onToolSelected('line')"
+  >
+    Line
+  </button>
 
-  <div #lineStyleDropdown class="dropdown" style="display: none;">
-    <select [(ngModel)]="selectedLineStyle" (change)="onLineStyleSelected(selectedLineStyle)">
-      <option *ngFor="let style of lineStyles" [value]="style">{{style}}</option>
+  <div #lineStyleDropdown class="dropdown" style="display: none">
+    <select
+      [(ngModel)]="selectedLineStyle"
+      (change)="onLineStyleSelected(selectedLineStyle)"
+    >
+      <option *ngFor="let style of lineStyles" [value]="style">
+        {{ style }}
+      </option>
     </select>
   </div>
-  
+
   <button (click)="undo()">Undo</button>
   <button (click)="redo()">Redo</button>
   <button (click)="clear()">Clear</button>
-  <button [class.selected]="selectedTool === 'text'" (click)="selectTool('text')">Text</button>
-  <button (click)="saveWhiteboard()">Save</button>
-  
-  </div>
-  
-    
-
+  <button
+    [class.selected]="selectedTool === 'text'"
+    (click)="selectTool('text')"
+  >
+    Text
+  </button>
+</div>

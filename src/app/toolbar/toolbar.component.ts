@@ -1,17 +1,28 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { WhiteboardService } from '../whiteboard.service';
 import { DrawingBoardComponent } from '../drawing-board/drawing-board.component';
 import { WhiteboardDataService } from '../whiteboard-data.service';
-
+interface FileInfo {
+  id: string;
+  name: string;
+}
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.css']
+  styleUrls: ['./toolbar.component.css'],
 })
+export class ToolbarComponent implements AfterViewInit, OnInit {
+  showFileMenu = false; // To control the visibility of the dropdown
+  showOpenModal = false;
 
-export class ToolbarComponent  implements AfterViewInit {
-
-  
   @Output() toolSelected = new EventEmitter<string>();
   @Output() downloadClicked = new EventEmitter<void>();
   @Output() penThicknessChanged = new EventEmitter<number>();
@@ -25,31 +36,47 @@ export class ToolbarComponent  implements AfterViewInit {
   penThickness: number = 1;
   penColor: string = '#000000';
   eraserSize: number = 50;
-  
+
   bpmnShapes: string[] = ['endEvent', 'task', 'gateway'];
   lineStyles = ['solid', 'dashed', 'dotted', 'arrow']; // Available line styles
   selectedLineStyle = this.lineStyles[0];
   @ViewChild('lineStyleDropdown') lineStyleDropdown!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild(DrawingBoardComponent) drawingBoard!: DrawingBoardComponent;
-  
-  private whiteboardData: any; 
-  constructor(private whiteboardService: WhiteboardService, private whiteboardDataService: WhiteboardDataService  ) {}
-  
+
+  private whiteboardData: any;
+  constructor(
+    private whiteboardService: WhiteboardService,
+    private whiteboardDataService: WhiteboardDataService
+  ) {}
+  files: FileInfo[] = [];
+  ngOnInit(): void {
+    this.whiteboardService.getWhiteboardFiles().subscribe(
+      (data: FileInfo[]) => {
+        this.files = data;
+      },
+      (error) => {
+        console.error('Failed to load whiteboard files', error);
+      }
+    );
+  }
 
   ngAfterViewInit(): void {
     // Wait for the drawing board to be fully initialized
     setTimeout(() => {
-      if (this.drawingBoard) { // Check if drawingBoard is defined
-        this.drawingBoard.dataLoaded.subscribe(data => {
-            this.whiteboardData = data;
+      if (this.drawingBoard) {
+        // Check if drawingBoard is defined
+        this.drawingBoard.dataLoaded.subscribe((data) => {
+          this.whiteboardData = data;
         });
       }
-    }, 0); 
-    
+    }, 0);
   }
 
-  
+  toggleFileMenu() {
+    this.showFileMenu = !this.showFileMenu;
+  }
+
   selectTool(tool: string) {
     this.selectedTool = tool;
     this.toolSelected.emit(tool);
@@ -60,7 +87,8 @@ export class ToolbarComponent  implements AfterViewInit {
 
     // Toggle dropdown visibility based on selected tool
     if (this.lineStyleDropdown) {
-      this.lineStyleDropdown.nativeElement.style.display = tool === 'line' ? 'block' : 'none';
+      this.lineStyleDropdown.nativeElement.style.display =
+        tool === 'line' ? 'block' : 'none';
     }
   }
   onLineStyleSelected(style: string) {
@@ -80,18 +108,19 @@ export class ToolbarComponent  implements AfterViewInit {
     this.redoClicked.emit();
   }
 
-  clear(){
+  clear() {
     this.clearClicked.emit(); //Emit the clear event when button is clicked
- }
+  }
   download() {
     this.downloadClicked.emit();
   }
   saveWhiteboard() {
-    const filename = prompt("Enter filename:", "whiteboard.json");
+    const filename = prompt('Enter filename:', 'whiteboard.json');
     if (filename) {
-      this.whiteboardDataService.whiteboardData$.subscribe(whiteboardData => {
+      this.whiteboardDataService.whiteboardData$.subscribe((whiteboardData) => {
         if (whiteboardData) {
-          this.whiteboardService.saveWhiteboard(filename, whiteboardData)
+          this.whiteboardService
+            .saveWhiteboard(filename, whiteboardData)
             .subscribe({
               next: (response) => {
                 console.log('Whiteboard saved:', response);
@@ -100,9 +129,10 @@ export class ToolbarComponent  implements AfterViewInit {
               error: (error) => {
                 console.error('Error saving whiteboard:', error);
                 // Handle the error (e.g., show an error message to the user)
-              }
+              },
             });
-            this.whiteboardService.saveWhiteboardasimage(filename, whiteboardData)
+          this.whiteboardService
+            .saveWhiteboardasimage(filename, whiteboardData)
             .subscribe({
               next: (response) => {
                 console.log('Whiteboard saved:', response);
@@ -111,7 +141,7 @@ export class ToolbarComponent  implements AfterViewInit {
               error: (error) => {
                 console.error('Error saving whiteboard:', error);
                 // Handle the error (e.g., show an error message to the user)
-              }
+              },
             });
         } else {
           console.error('No whiteboard data found.');
@@ -119,10 +149,4 @@ export class ToolbarComponent  implements AfterViewInit {
       });
     }
   }
-
-  
-  
-
-
 }
-

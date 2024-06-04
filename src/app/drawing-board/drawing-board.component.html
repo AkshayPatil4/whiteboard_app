@@ -1,24 +1,25 @@
 <div class="whiteboard-container">
   <app-toolbar
-      (toolSelected)="onToolSelected($event)"
-      (downloadClicked)="downloadImage()"
-      (penThicknessChanged)="onPenThicknessChanged($event)"
-      (penColorChanged)="onPenColorChanged($event)"
-      (eraserSizeChanged)="onEraserSizeChanged($event)"
-      (lineStyleChanged)="lineStyle = $event"
-      (undoClicked)="undo()"    
-      (redoClicked)="redo()"
-      (clearClicked)="clearCanvas()"
-    ></app-toolbar>
-     <div class="whiteboard">
-      <canvas #whiteboardCanvas
+    (toolSelected)="onToolSelected($event)"
+    (downloadClicked)="downloadImage()"
+    (penThicknessChanged)="onPenThicknessChanged($event)"
+    (penColorChanged)="onPenColorChanged($event)"
+    (eraserSizeChanged)="onEraserSizeChanged($event)"
+    (lineStyleChanged)="lineStyle = $event"
+    (undoClicked)="undo()"
+    (redoClicked)="redo()"
+    (clearClicked)="clearCanvas()"
+  ></app-toolbar>
+  <div class="whiteboard">
+    <canvas
+      #whiteboardCanvas
       width="1200"
       height="650"
-      style="border: 2px solid #ccc; background-color: white;"
+      style="border: 2px solid #ccc; background-color: white"
       (mousedown)="startDrawing($event)"
       (mousemove)="draw($event)"
       (mouseup)="stopDrawing($event)"
       (mouseout)="stopDrawing($event)"
     ></canvas>
-    </div>
   </div>
+</div>
