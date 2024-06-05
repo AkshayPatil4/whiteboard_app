@@ -34,6 +34,7 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
   @Output() undoClicked = new EventEmitter<void>();
   @Output() redoClicked = new EventEmitter<void>();
   @Output() clearClicked = new EventEmitter<void>();
+  @ViewChild('colorPicker') colorPicker!: ElementRef<HTMLInputElement>;
   selectedTool: string = 'pen';
   penThickness: number = 1;
   penColor: string = '#000000';
@@ -75,7 +76,13 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
       }
     }, 0);
   }
-
+  openColorPicker() {
+    this.colorPicker.nativeElement.click(); 
+  }
+  onPenColorChanged(event: Event) {
+    const newColor = (event.target as HTMLInputElement).value;
+    this.penColorChanged.emit(newColor); // Emit the new color
+  }
   loadWhiteboard(fileName: string) {
     console.log('File ID to load:', fileName);
     this.whiteboardService.loadWhiteboard(fileName)

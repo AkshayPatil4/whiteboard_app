@@ -1,42 +1,111 @@
+/* General Toolbar Styling */
 .toolbar {
+  position: fixed;
+  top: 20px; 
+  left: 20px;
   display: flex;
-  flex-direction: column; /* Arrange buttons vertically */
+  flex-direction: column;
   background-color: #f0f0f0;
   padding: 10px;
   border: 1px solid #ccc;
+  z-index: 2;
+  overflow-y: auto;
+  width: 30px;
+  height: fit-content; /* Dynamic height */
+  border-radius: 10px; 
+}
+.toolbar-wrapper {
+  max-height: calc(100vh - 40px); /* Limit toolbar height to viewport height minus padding */
 }
 
+
+
+/* Button Styling */
 .toolbar button {
   padding: 8px;
   margin-bottom: 5px;
   border: none;
   background-color: #fff;
   cursor: pointer;
+  text-align: center;
+  width: 100%; /* Make buttons full width of the toolbar */
+  border-radius: 5px; /* Add rounded corners */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+.toolbar button:hover, .toolbar button:focus {
+  background-color: #e0e0e0; /* Highlight button on hover */
 }
 
 .toolbar button.selected {
-  background-color: #e0e0e0; /* Highlight selected button */
+  background-color: #ddd;
 }
 
-/* Basic Modal Styling (Customize as needed) */
+/* Dropdown Styling */
+.toolbar .dropdown-content {
+  display: block;
+  margin-bottom: 5px;
+  width: 100%; /* Make dropdown full width of the toolbar */
+}
+.toolbar .dropdown-content input[type="range"] {
+  width: 100%; 
+}
+
+.toolbar .dropdown-content span {
+  display: block;
+  text-align: center;
+}
+
+
+
+/* Modal Styling */
 .modal {
-  display: block; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: block; 
+  position: fixed; 
+  z-index: 1;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.4); 
+  border-radius: 10px; 
 }
 
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  background-color: #f0f0f0;
+  margin: 15% auto; 
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be less or more */
+  width: 50%; 
+  border-radius: 10px; 
+}
+
+
+
+.file-list {
+  list-style: none; /* Remove default list styling */
+  padding: 0;
+  margin: 0;
+}
+
+.file-item {
+  display: flex;   /* Use flexbox for alignment */
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee; /* Add a separator line */
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from links */
+}
+.file-name{
+  font-size: 18px;  /* Increase font size for filenames */
+  margin-left: 10px; /* Add some space between icon and filename */
+}
+.file-item i {
+  margin-right: 5px; /* Add space between the icon and filename */
+}
+
+.file-item:hover {
+  background-color: #ddd;  /* Highlight on hover */
 }
 
 .close-button {
@@ -51,4 +120,46 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+
+/* Color Picker Styling */
+.color-picker {
+  width: 30px;
+  height: 30px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border: none;
+}
+
+/* Undo/Redo Icon Styling */
+.undo {
+  transform: scaleX(-1); 
+}
+
+/* Whiteboard Container Styling */
+.whiteboard-container {
+  display: flex;
+  height: 100vh;
+}
+.line-style-button {
+  /* Make buttons for line styles look like icons */
+  background: none; 
+  border: none;
+  padding: 0;       
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
 }

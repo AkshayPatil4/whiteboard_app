@@ -1,119 +1,105 @@
 <div class="toolbar">
-  <button (click)="showFileMenu = !showFileMenu">File</button>
+  <div class="toolbar-wrapper">  <button (click)="showFileMenu = !showFileMenu" title="File">
+    <i class="uil uil-folder-download"></i>
+      </button>
 
-  <div class="dropdown" *ngIf="showFileMenu">
-    <button (click)="clear()">New</button>
-    <button (click)="showOpenModal = true">Open</button>
-    <button (click)="saveWhiteboard()">Save</button>
-  </div>
+      <div class="dropdown" *ngIf="showFileMenu">
+          <button (click)="clear()" title="New">
+              <i class="uil uil-file-plus-alt"></i>
+          </button>
+          <button (click)="showOpenModal = true" title="Open">
+              <i class="uil uil-folder-open"></i>
+          </button>
+          <button (click)="saveWhiteboard()" title="Save">
+              <i class="uil uil-save"></i>
+          </button>
+      </div>
 
-  <div id="openModal" class="modal" *ngIf="showOpenModal">
-    <div class="modal-content">
-      <span class="close-button" (click)="showOpenModal = false">&times;</span>
-      <h2>Open Whiteboard</h2>
+      <div id="openModal" class="modal" *ngIf="showOpenModal">
+        <div class="modal-content">
+          <span class="close-button" (click)="showOpenModal = false">&times;</span>
+          <h2>Whiteboard Files</h2>
+      
+          <ul class="file-list"> <!— Added class to the ul tag -->
+            <li *ngFor="let file of files">
+              <a (click)="loadWhiteboard(file.name); showOpenModal = false;" class="file-item"> <!— Added class to the a tag -->
+                <i class="uil uil-file"></i> <!— Added file icon --> 
+                <span class="file-name">{{ file.name }}</span> <!— Added span for file name -->
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-      <ul>
-        <li *ngFor="let file of files">
-          <a (click)="loadWhiteboard(file.name); showOpenModal = false">{{
-            file.name
-          }}</a>
-        </li>
-      </ul>
+      <input class="color-picker" type="color" [(ngModel)]="penColor" (change)="penColorChanged.emit(penColor)" title="Pen Color" />
+      <button [class.selected]="selectedTool === 'pen'" (click)="selectTool('pen')" title="Pen">
+          <i class="uil uil-pen"></i>
+      </button>
+      <div class="dropdown-content" *ngIf="selectedTool === 'pen'">
+          <div>
+              <input type="range" min="1" max="10" [(ngModel)]="penThickness" (change)="penThicknessChanged.emit(penThickness)" title="Pen Thickness">
+              <span>{{ penThickness }}</span>
+          </div>
+      </div>
+      <button [class.selected]="selectedTool === 'eraser'" (click)="selectTool('eraser')" title="Eraser">
+        <svg width="15" height="13" viewBox="0 0 512 512" style="color:currentColor" xmlns="http://www.w3.org/2000/svg" class="h-full w-full"><rect width="512" height="512" x="0" y="0" rx="0" fill="transparent" stroke="transparent" stroke-width="0" stroke-opacity="100%" paint-order="stroke"></rect><svg width="512px" height="512px" viewBox="0 0 16 16" fill="currentColor" x="0" y="0" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path fill="currentColor" d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293l4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547L3.453 8.254L1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/></g></svg></svg>
+      </button>
+      <div class="dropdown-content" *ngIf="selectedTool === 'eraser'">
+          <div>
+              <input type="range" min="5" max="30" [(ngModel)]="eraserSize" (change)="eraserSizeChanged.emit(eraserSize)" title="Eraser Size">
+              <span>{{ eraserSize }}</span>
+          </div>
+      </div>
+      <button [class.selected]="selectedTool === 'rectangle'" (click)="selectTool('rectangle')" title="Rectangle">
+          <i class="uil uil-square"></i>
+      </button>
+      <button [class.selected]="selectedTool === 'circle'" (click)="selectTool('circle')" title="Circle">
+          <i class="uil uil-circle"></i>
+      </button>
+      
+      <button [class.selected]="selectedTool === 'line'" (click)="onToolSelected('line')" title="Line">
+        <i class="uil uil-line-alt"></i>
+    </button>
+
+    <div #lineStyleDropdown class="dropdown"  *ngIf="selectedTool === 'line'">
+      <button 
+        *ngFor="let style of lineStyles"
+        (click)="onLineStyleSelected(style)"
+        [class.selected]="selectedLineStyle === style"
+        [title]="style"
+        class="line-style-button"
+      >
+        <div [ngSwitch]="style">
+          <div *ngSwitchCase="'solid'">
+            <i class="uil uil-minus"></i>
+          </div>
+          <div *ngSwitchCase="'dashed'">
+            <i class="uil uil-grip-lines"> </i><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgIAy4GBgYrIhRVM/AwMBDSKENVDFOwM7AwMBKjHU1DAwMHIQUlhKyjigAMiGcGEVEBYE8MW4CALTKA1jEe6kPAAAAAElFTkSuQmCC">
+          </div>
+          <div *ngSwitchCase="'dotted'">
+            <i class="uil uil-ellipsis-h"></i>
+          </div>
+          <div *ngSwitchCase="'arrow'">
+            <i class="uil uil-arrow-right"></i>
+          </div>
+        </div>
+      </button>
     </div>
+      <button [class.selected]="selectedTool === 'startEvent'" (click)="selectTool('startEvent')" title="Start Event">
+          <i class="uil uil-record-audio"></i> 
+      </button>
+      <button [class.selected]="selectedTool === 'endEvent'" (click)="selectTool('endEvent')" title="End Event">
+        <svg width="15" height="13" viewBox="0 0 512 512" style="color:currentColor" xmlns="http://www.w3.org/2000/svg" class="h-full w-full"><rect width="512" height="512" x="0" y="0" rx="0" fill="transparent" stroke="transparent" stroke-width="0" stroke-opacity="100%" paint-order="stroke"></rect><svg width="512px" height="512px" viewBox="0 0 2048 2048" fill="currentColor" x="0" y="0" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path fill="currentColor" d="M1005.303 98.988c-447.59.377-859.063 373.342-901.291 819.483c-45.314 379.987 168.535 777.154 517.567 938.558c324.137 158.423 740.176 108.288 1009.01-135.647c273.526-236.69 393.041-640.13 272.893-984.32c-114.258-351.15-451.46-619.981-822.842-636.252c-25.079-1.64-50.213-1.947-75.337-1.822zm18.334 289.733c329.628-9.588 631.825 281.137 635.693 610.898c14.255 301.673-212.385 597.907-513.018 648.484c-290.913 58.275-613.563-109.854-715.39-392.282c-109.622-279.29 2.217-632.478 269.045-779.065c97.56-57.284 210.508-88.176 323.67-88.035zM1024 554.17c-304.682-11.568-549.567 321.3-448.846 608.674c79.046 294.298 469.266 430.4 714.132 248.923c257.896-162.49 272.52-575.472 26.765-755.798c-82.202-65.575-186.913-102.06-292.051-101.8z"/></g></svg></svg>
+      </button>
+      <button [class.selected]="selectedTool === 'task'" (click)="selectTool('task')" title="Task">
+          <i class="uil uil-square-shape"></i>
+      </button>
+      <button [class.selected]="selectedTool === 'gateway'" (click)="selectTool('gateway')" title="Gateway">
+        <i class="uil uil-diamond"></i>
+      </button>
+      <button (click)="undo()" title="Undo" ><i class="uil uil-corner-up-left"></i></button>
+      <button (click)="redo()" title="Redo" ><i class="uil uil-corner-up-right-alt"></i></button>
+      <button (click)="clear()" title="Clear"><i class="uil uil-trash-alt"></i></button>
+      <button [class.selected]="selectedTool === 'text'" (click)="selectTool('text')" title="Text"><i class="uil uil-font"></i></button>
   </div>
-
-  <div>
-    Color:
-    <input
-      type="color"
-      [(ngModel)]="penColor"
-      (change)="penColorChanged.emit(penColor)"
-    />
-  </div>
-  <button [class.selected]="selectedTool === 'pen'" (click)="selectTool('pen')">
-    Pen
-  </button>
-
-  <div class="dropdown-content">
-    <div>
-      Thickness:
-      <input
-        type="range"
-        min="1"
-        max="10"
-        [(ngModel)]="penThickness"
-        (change)="penThicknessChanged.emit(penThickness)"
-      />
-      <span>{{ penThickness }}</span>
-    </div>
-  </div>
-  <button
-    [class.selected]="selectedTool === 'eraser'"
-    (click)="selectTool('eraser')"
-  >
-    Eraser
-  </button>
-  <button
-    [class.selected]="selectedTool === 'rectangle'"
-    (click)="selectTool('rectangle')"
-  >
-    Rectangle
-  </button>
-  <button
-    [class.selected]="selectedTool === 'circle'"
-    (click)="selectTool('circle')"
-  >
-    Circle
-  </button>
-  <button
-    [class.selected]="selectedTool === 'startEvent'"
-    (click)="selectTool('startEvent')"
-  >
-    Start Event
-  </button>
-  <button
-    [class.selected]="selectedTool === 'endEvent'"
-    (click)="selectTool('endEvent')"
-  >
-    End Event
-  </button>
-  <button
-    [class.selected]="selectedTool === 'task'"
-    (click)="selectTool('task')"
-  >
-    Task
-  </button>
-  <button
-    [class.selected]="selectedTool === 'gateway'"
-    (click)="selectTool('gateway')"
-  >
-    Gateway
-  </button>
-  <button
-    [class.selected]="selectedTool === 'line'"
-    (click)="onToolSelected('line')"
-  >
-    Line
-  </button>
-
-  <div #lineStyleDropdown class="dropdown" style="display: none">
-    <select
-      [(ngModel)]="selectedLineStyle"
-      (change)="onLineStyleSelected(selectedLineStyle)"
-    >
-      <option *ngFor="let style of lineStyles" [value]="style">
-        {{ style }}
-      </option>
-    </select>
-  </div>
-
-  <button (click)="undo()">Undo</button>
-  <button (click)="redo()">Redo</button>
-  <button (click)="clear()">Clear</button>
-  <button
-    [class.selected]="selectedTool === 'text'"
-    (click)="selectTool('text')"
-  >
-    Text
-  </button>
 </div>
