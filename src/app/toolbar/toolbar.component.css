@@ -1,7 +1,7 @@
 /* General Toolbar Styling */
 .toolbar {
   position: fixed;
-  top: 20px; 
+  top: 20px;
   left: 20px;
   display: flex;
   flex-direction: column;
@@ -12,13 +12,13 @@
   overflow-y: auto;
   width: 30px;
   height: fit-content; /* Dynamic height */
-  border-radius: 10px; 
+  border-radius: 10px;
 }
 .toolbar-wrapper {
-  max-height: calc(100vh - 40px); /* Limit toolbar height to viewport height minus padding */
+  max-height: calc(
+    100vh - 40px
+  ); /* Limit toolbar height to viewport height minus padding */
 }
-
-
 
 /* Button Styling */
 .toolbar button {
@@ -32,7 +32,8 @@
   border-radius: 5px; /* Add rounded corners */
   transition: background-color 0.3s; /* Smooth transition for background color */
 }
-.toolbar button:hover, .toolbar button:focus {
+.toolbar button:hover,
+.toolbar button:focus {
   background-color: #e0e0e0; /* Highlight button on hover */
 }
 
@@ -47,7 +48,7 @@
   width: 100%; /* Make dropdown full width of the toolbar */
 }
 .toolbar .dropdown-content input[type="range"] {
-  width: 100%; 
+  width: 100%;
 }
 
 .toolbar .dropdown-content span {
@@ -55,32 +56,28 @@
   text-align: center;
 }
 
-
-
 /* Modal Styling */
 .modal {
-  display: block; 
-  position: fixed; 
+  display: block;
+  position: fixed;
   z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgba(0, 0, 0, 0.4); 
-  border-radius: 10px; 
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
 }
 
 .modal-content {
   background-color: #f0f0f0;
-  margin: 15% auto; 
+  margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 50%; 
-  border-radius: 10px; 
+  width: 50%;
+  border-radius: 10px;
 }
-
-
 
 .file-list {
   list-style: none; /* Remove default list styling */
@@ -89,15 +86,15 @@
 }
 
 .file-item {
-  display: flex;   /* Use flexbox for alignment */
+  display: flex; /* Use flexbox for alignment */
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #eee; /* Add a separator line */
   cursor: pointer;
   text-decoration: none; /* Remove underline from links */
 }
-.file-name{
-  font-size: 18px;  /* Increase font size for filenames */
+.file-name {
+  font-size: 18px; /* Increase font size for filenames */
   margin-left: 10px; /* Add some space between icon and filename */
 }
 .file-item i {
@@ -105,7 +102,7 @@
 }
 
 .file-item:hover {
-  background-color: #ddd;  /* Highlight on hover */
+  background-color: #ddd; /* Highlight on hover */
 }
 
 .close-button {
@@ -121,7 +118,6 @@
   text-decoration: none;
   cursor: pointer;
 }
-
 
 /* Color Picker Styling */
 .color-picker {
@@ -142,7 +138,7 @@
 
 /* Undo/Redo Icon Styling */
 .undo {
-  transform: scaleX(-1); 
+  transform: scaleX(-1);
 }
 
 /* Whiteboard Container Styling */
@@ -152,9 +148,9 @@
 }
 .line-style-button {
   /* Make buttons for line styles look like icons */
-  background: none; 
+  background: none;
   border: none;
-  padding: 0;       
+  padding: 0;
   width: 30px;
   height: 30px;
   border-radius: 50%;

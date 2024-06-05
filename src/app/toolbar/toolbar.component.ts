@@ -46,13 +46,15 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
   @ViewChild('lineStyleDropdown') lineStyleDropdown!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild(DrawingBoardComponent) drawingBoard!: DrawingBoardComponent;
-
+   // To control the visibility of the dropdown
+ 
   private whiteboardData: any;
   constructor(
     private whiteboardService: WhiteboardService,
     private whiteboardDataService: WhiteboardDataService,
     private whiteboardLoaderService: WhiteboardLoaderService
   ) {}
+  
   files: FileInfo[] = [];
   ngOnInit(): void {
     this.whiteboardService.getWhiteboardFiles().subscribe(
@@ -63,6 +65,9 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
         console.error('Failed to load whiteboard files', error);
       }
     );
+    this.toolSelected.subscribe(() => { // Subscribe to toolSelected event
+      this.showFileMenu = false; // Close file menu when a tool is selected
+    });
   }
 
   ngAfterViewInit(): void {
@@ -77,7 +82,7 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
     }, 0);
   }
   openColorPicker() {
-    this.colorPicker.nativeElement.click(); 
+    this.colorPicker.nativeElement.click();
   }
   onPenColorChanged(event: Event) {
     const newColor = (event.target as HTMLInputElement).value;
@@ -85,7 +90,8 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
   }
   loadWhiteboard(fileName: string) {
     console.log('File ID to load:', fileName);
-    this.whiteboardService.loadWhiteboard(fileName)
+    this.whiteboardService
+      .loadWhiteboard(fileName)
       .pipe(take(1)) // Take only the first emission
       .subscribe(
         (response: any) => {
@@ -146,7 +152,8 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
         if (whiteboardData) {
           this.whiteboardService
             .saveWhiteboard(filename, whiteboardData)
-            .pipe(take(1)).subscribe({
+            .pipe(take(1))
+            .subscribe({
               next: (response) => {
                 console.log('Whiteboard saved:', response);
                 // Optionally, you can emit an event here to notify other components or show a success message
@@ -158,7 +165,8 @@ export class ToolbarComponent implements AfterViewInit, OnInit {
             });
           this.whiteboardService
             .saveWhiteboardasimage(filename, whiteboardData)
-            .pipe(take(1)).subscribe({
+            .pipe(take(1))
+            .subscribe({
               next: (response) => {
                 console.log('Whiteboard saved:', response);
                 // Optionally, you can emit an event here to notify other components or show a success message
