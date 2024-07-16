@@ -28,11 +28,11 @@
    git clone repository
    cd angular-whiteboard-frontend
    npm install
-Use code with caution.
+
 
 Development Server:
 Bash
 ng serve
-Use code with caution.
+
 
 Navigate to http://localhost:4200/ in your browser.
